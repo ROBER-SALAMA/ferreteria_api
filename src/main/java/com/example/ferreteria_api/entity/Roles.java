@@ -12,6 +12,6 @@ public class Roles {
 
     private String name;
 
-    @Column(columnDefinition = "boolean default true")
+    @Column(name = "is_active", columnDefinition = "boolean default true")
     private boolean isActive = true;
 }

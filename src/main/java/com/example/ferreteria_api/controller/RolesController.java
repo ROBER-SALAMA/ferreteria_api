@@ -1,8 +1,11 @@
 package com.example.ferreteria_api.controller;
 
 import com.example.ferreteria_api.entity.Roles;
+import com.example.ferreteria_api.global.ApiResponse;
 import com.example.ferreteria_api.service.RolesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +29,17 @@ public class RolesController {
     }
 
     @PostMapping
-    public void save(@RequestBody Roles roles) {
-        rolesService.saveOrUpdate(roles);
+    public ResponseEntity<ApiResponse> save(@RequestBody Roles roles) {
+        Roles saveRoles = rolesService.save(roles);
+        ApiResponse response = new ApiResponse("successfully created", saveRoles);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+
+    @PutMapping("/{id}")
+    public void update(@PathVariable("id") Long id, @RequestBody Roles roles) {
+        roles.setId(id);
+        rolesService.update(roles);
     }
 
     @DeleteMapping("/{id}")
