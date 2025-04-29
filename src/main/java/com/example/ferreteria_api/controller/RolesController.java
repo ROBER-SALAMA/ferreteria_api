@@ -2,13 +2,16 @@ package com.example.ferreteria_api.controller;
 
 import com.example.ferreteria_api.entity.Roles;
 import com.example.ferreteria_api.global.ApiResponse;
+import com.example.ferreteria_api.global.GetResponse;
 import com.example.ferreteria_api.service.RolesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,8 +22,18 @@ public class RolesController {
     private RolesService rolesService;
 
     @GetMapping
-    public List<Roles> getAll() {
-        return rolesService.getRoles();
+    public ResponseEntity<GetResponse> getAll() {
+        List<Roles> roles = rolesService.getRoles();
+
+        if (roles.isEmpty()) {
+            GetResponse response = new GetResponse(false, "No se encontraron roles activos");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        GetResponse response = new GetResponse(true, "Roles found successfully");
+        response.addField("roles", roles);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
@@ -43,8 +56,10 @@ public class RolesController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
+    public ResponseEntity<ApiResponse> delete(@PathVariable("id") Long id) {
         rolesService.delete(id);
+        ApiResponse response = new ApiResponse("role successfully deleted", null);
+        return ResponseEntity.ok(response);
     }
 
 }
