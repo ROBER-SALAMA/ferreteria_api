@@ -33,17 +33,23 @@ public class RolesService {
         }
     }
 
-    public Optional<Roles> getRolesById(Long id){
+    public Roles getRolesById(Long id) {
         try {
-             rolesRepository.findById(id).orElse(null);
+            Roles role = rolesRepository.findById(id)
+                    .orElseThrow(() -> new CustomException("Rol no encontrado con id: " + id, HttpStatus.NOT_FOUND));
+
+            if (!role.isActive()) {
+                throw new CustomException("Rol con id " + id + " está inactivo", HttpStatus.NOT_FOUND);
+            }
+
+            return role;
+        } catch (CustomException e) {
+            throw e;
         } catch (Exception e) {
-            throw new CustomException(
-                    "Internal server error: method findById from service",
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            throw new CustomException("Internal server error: method findById from service", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return Optional.empty();
     }
+
 
     public Roles save(Roles roles) {
         try {

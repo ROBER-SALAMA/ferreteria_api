@@ -2,6 +2,7 @@ package com.example.ferreteria_api.controller;
 
 import com.example.ferreteria_api.entity.Roles;
 import com.example.ferreteria_api.global.ApiResponse;
+import com.example.ferreteria_api.global.CustomException;
 import com.example.ferreteria_api.global.GetResponse;
 import com.example.ferreteria_api.service.RolesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,13 @@ public class RolesController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Roles> getById(@PathVariable("id") Long id) {
-        return rolesService.getRolesById(id);
+    public ResponseEntity<GetResponse> getById(@PathVariable("id") Long id) {
+            Roles role = rolesService.getRolesById(id);
+
+            GetResponse response = new GetResponse(true, "Roles found successfully");
+            response.addField("role", role);
+
+            return ResponseEntity.ok(response);
     }
 
     @PostMapping
