@@ -1,8 +1,10 @@
 package com.example.ferreteria_api.controller;
 
 
+import com.example.ferreteria_api.entity.Roles;
 import com.example.ferreteria_api.entity.TypeOfProduct;
 import com.example.ferreteria_api.global.ApiResponse;
+import com.example.ferreteria_api.global.GetResponse;
 import com.example.ferreteria_api.service.TypeOfProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,8 +26,13 @@ public class TypeOfProductController {
     }
 
     @GetMapping("/{id}")
-    public Optional<TypeOfProduct> getById(@PathVariable("id") Long id) {
-        return typeOfProductService.getTypeOfProductById(id);
+    public ResponseEntity<GetResponse> getById(@PathVariable("id") Long id) {
+        TypeOfProduct typeOfProduct = TypeOfProductService.getTypeOfProductById(id);
+
+        GetResponse response = new GetResponse(true, "Roles found successfully");
+        response.addField("typeOfProduct", typeOfProduct);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping

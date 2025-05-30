@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class TypeOfProductService {
     //injeccion de dependencias
     @Autowired
-    TypeOfProductRepository typeOfProductRepository;
+    static TypeOfProductRepository typeOfProductRepository;
 
     public List<TypeOfProduct> getTypeOfProduct() {
         try {
@@ -44,6 +44,23 @@ public class TypeOfProductService {
             );
         }
 
+    }
+
+    public static TypeOfProduct getTypeOfProductById(Long id) {
+        try {
+            TypeOfProduct typeOfProduct = typeOfProductRepository.findById(id)
+                    .orElseThrow(() -> new CustomException("typeOfProduct no found id: " + id, HttpStatus.NOT_FOUND));
+
+            if (!typeOfProduct.isActive()) {
+                throw new CustomException("typeOfProduct  id " + id + " is inactive", HttpStatus.NOT_FOUND);
+            }
+
+            return typeOfProduct;
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomException("Internal server error: method findById from service", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public TypeOfProduct save(TypeOfProduct typeOfProduct) {
