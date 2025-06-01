@@ -1,6 +1,7 @@
 package com.example.ferreteria_api.service;
 
 import com.example.ferreteria_api.entity.Categories;
+import com.example.ferreteria_api.entity.Roles;
 import com.example.ferreteria_api.global.CustomException;
 import com.example.ferreteria_api.repository.CategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +30,21 @@ public class CategoriesService {
             );
         }
     }
-
-    public Optional<Categories> getCategoriesById(Long id){
+    public Categories getCategoriesById(Long id) {
         try {
-           return categoriesRepository.findById(id);
-        } catch (Exception e) {
-            throw new CustomException(
-                    "Internal server error: method findById from service",
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
+            Categories categories = categoriesRepository.findById(id)
+                    .orElseThrow(() -> new CustomException("categoria no encontrado con id: " + id, HttpStatus.NOT_FOUND));
 
+            if (!categories.isActive()) {
+                throw new CustomException("categoria con id " + id + " está inactivo", HttpStatus.NOT_FOUND);
+            }
+
+            return categories;
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomException("Internal server error: method findById from service", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public Categories save(Categories categories) {

@@ -1,7 +1,9 @@
 package com.example.ferreteria_api.controller;
 
 import com.example.ferreteria_api.entity.Categories;
+import com.example.ferreteria_api.entity.Roles;
 import com.example.ferreteria_api.global.ApiResponse;
+import com.example.ferreteria_api.global.GetResponse;
 import com.example.ferreteria_api.service.CategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +25,14 @@ public class CategoriesController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Categories> getById(@PathVariable("id") Long id) {
-        return categoriesService.getCategoriesById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+    public ResponseEntity<GetResponse> getById(@PathVariable("id") Long id) {
+        Categories categories = categoriesService.getCategoriesById(id);
 
+        GetResponse response = new GetResponse(true, "Roles found successfully");
+        response.addField("categories", categories);
+
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse> save(@RequestBody Categories categories) {

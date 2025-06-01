@@ -1,8 +1,10 @@
 package com.example.ferreteria_api.controller;
 
 
+import com.example.ferreteria_api.entity.Roles;
 import com.example.ferreteria_api.entity.TypeOfMeasure;
 import com.example.ferreteria_api.global.ApiResponse;
+import com.example.ferreteria_api.global.GetResponse;
 import com.example.ferreteria_api.service.TypeOfMeasureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,8 +26,13 @@ public class TypeOfMeasureController {
     }
 
     @GetMapping("/{id}")
-    public Optional<TypeOfMeasure> getById(@PathVariable("id") Long id) {
-        return typeOfMeasureService.getTypeOfMeasureById(id);
+    public ResponseEntity<GetResponse> getById(@PathVariable("id") Long id) {
+        TypeOfMeasure typeOfMeasure = typeOfMeasureService.getTypeOfMeasureById(id);
+
+        GetResponse response = new GetResponse(true, "Roles found successfully");
+        response.addField("typeOfMeasure", typeOfMeasure);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping

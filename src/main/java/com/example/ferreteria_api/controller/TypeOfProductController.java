@@ -1,6 +1,5 @@
 package com.example.ferreteria_api.controller;
 
-
 import com.example.ferreteria_api.entity.Roles;
 import com.example.ferreteria_api.entity.TypeOfProduct;
 import com.example.ferreteria_api.global.ApiResponse;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/typeofproduct")
@@ -21,15 +19,25 @@ public class TypeOfProductController {
     private TypeOfProductService typeOfProductService;
 
     @GetMapping
-    public List<TypeOfProduct> getAll() {
-        return typeOfProductService.getTypeOfProduct();
+    public ResponseEntity<GetResponse> getAll() {
+        List<TypeOfProduct> typeOfProducts = typeOfProductService.getTypeOfProduct();
+
+        if (typeOfProducts.isEmpty()) {
+            GetResponse response = new GetResponse(false, "No se encontraron typeOfProducts activos");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        GetResponse response = new GetResponse(true, "Roles found successfully");
+        response.addField("typeOfProducts", typeOfProducts);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GetResponse> getById(@PathVariable("id") Long id) {
-        TypeOfProduct typeOfProduct = TypeOfProductService.getTypeOfProductById(id);
+        TypeOfProduct typeOfProduct = typeOfProductService.getTypeOfProductById(id);
 
-        GetResponse response = new GetResponse(true, "Roles found successfully");
+        GetResponse response = new GetResponse(true, "typeOfProduct found successfully");
         response.addField("typeOfProduct", typeOfProduct);
 
         return ResponseEntity.ok(response);

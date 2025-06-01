@@ -16,52 +16,43 @@ import java.util.stream.Collectors;
 
 @Service
 public class TypeOfProductService {
-    //injeccion de dependencias
+
     @Autowired
-    static TypeOfProductRepository typeOfProductRepository;
+    TypeOfProductRepository typeOfProductRepository;
 
     public List<TypeOfProduct> getTypeOfProduct() {
         try {
             return typeOfProductRepository.findAll()
                     .stream()
-                    .filter(TypeOfProduct::isActive) // Filtra solo los activos
+                    .filter(TypeOfProduct::isActive)
                     .collect(Collectors.toList());
         } catch (Exception ex) {
             throw new CustomException(
-                    "Error al procesar los roles: " + ex.getMessage(),
+                    "Error al procesar los TypeOfProduct: " + ex.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }
 
-    public Optional<TypeOfProduct> getTypeOfMeasureById(Long id){
-        try {
-            return typeOfProductRepository.findById(id);
-        } catch (Exception e) {
-            throw new CustomException(
-                    "Internal server error: method findById from service",
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
-
-    }
-
-    public static TypeOfProduct getTypeOfProductById(Long id) {
+    public TypeOfProduct getTypeOfProductById(Long id) {
         try {
             TypeOfProduct typeOfProduct = typeOfProductRepository.findById(id)
-                    .orElseThrow(() -> new CustomException("typeOfProduct no found id: " + id, HttpStatus.NOT_FOUND));
+                    .orElseThrow(() -> new CustomException("Tipo de productos con id: " + id, HttpStatus.NOT_FOUND));
 
             if (!typeOfProduct.isActive()) {
-                throw new CustomException("typeOfProduct  id " + id + " is inactive", HttpStatus.NOT_FOUND);
+                throw new CustomException("tipo de producto con id " + id + " está inactivo", HttpStatus.NOT_FOUND);
             }
 
             return typeOfProduct;
         } catch (CustomException e) {
+            e.printStackTrace();
             throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new CustomException("Internal server error: method findById from service", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     public TypeOfProduct save(TypeOfProduct typeOfProduct) {
         try {

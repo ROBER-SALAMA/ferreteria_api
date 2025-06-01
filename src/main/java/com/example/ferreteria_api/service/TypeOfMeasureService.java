@@ -33,16 +33,21 @@ public class TypeOfMeasureService {
         }
     }
 
-    public Optional<TypeOfMeasure> getTypeOfMeasureById(Long id){
+    public TypeOfMeasure getTypeOfMeasureById(Long id) {
         try {
-            return typeOfMeasureRepository.findById(id);
-        } catch (Exception e) {
-            throw new CustomException(
-                    "Internal server error: method findById from service",
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
+            TypeOfMeasure typeOfMeasure = typeOfMeasureRepository.findById(id)
+                    .orElseThrow(() -> new CustomException("typeOfMeasure no encontrado con id: " + id, HttpStatus.NOT_FOUND));
 
+            if (!typeOfMeasure.isActive()) {
+                throw new CustomException("typeOfMeasure con id " + id + " está inactivo", HttpStatus.NOT_FOUND);
+            }
+
+            return typeOfMeasure;
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomException("Internal server error: method findById from service", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public TypeOfMeasure save(TypeOfMeasure typeOfMeasure){
