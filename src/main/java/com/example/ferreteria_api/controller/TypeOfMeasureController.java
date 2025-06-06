@@ -21,8 +21,18 @@ public class TypeOfMeasureController {
     private TypeOfMeasureService typeOfMeasureService;
 
     @GetMapping
-    public List<TypeOfMeasure> getAll() {
-        return typeOfMeasureService.getTypeOfMeasure();
+    public ResponseEntity<GetResponse> getAll() {
+        List<TypeOfMeasure> typeOfMeasures = typeOfMeasureService.getTypeOfMeasure();
+
+        if (typeOfMeasures.isEmpty()) {
+            GetResponse response = new GetResponse(false, "No se encontraron tipos de medida activos");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        GetResponse response = new GetResponse(true, "type of measure found successfully");
+        response.addField("typeOfMeasure",typeOfMeasures);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

@@ -20,8 +20,18 @@ public class CategoriesController {
     private CategoriesService categoriesService;
 
     @GetMapping
-    public List<Categories> getAll() {
-        return categoriesService.getCategories();
+    public ResponseEntity<GetResponse> getAll() {
+        List<Categories> categories = categoriesService.getCategories();
+
+        if (categories.isEmpty()) {
+            GetResponse response = new GetResponse(false, "No se encontraron categorias activos");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        GetResponse response = new GetResponse(true, "categories found successfully");
+        response.addField("categories", categories);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

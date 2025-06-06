@@ -27,7 +27,7 @@ public class TypeOfProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
-        GetResponse response = new GetResponse(true, "Roles found successfully");
+        GetResponse response = new GetResponse(true, "type of product found successfully");
         response.addField("typeOfProducts", typeOfProducts);
 
         return ResponseEntity.ok(response);
