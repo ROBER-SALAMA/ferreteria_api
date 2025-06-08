@@ -1,6 +1,7 @@
 package com.example.ferreteria_api.controller;
 
 import com.example.ferreteria_api.entity.Client;
+import com.example.ferreteria_api.entity.Roles;
 import com.example.ferreteria_api.global.ApiResponse;
 import com.example.ferreteria_api.global.GetResponse;
 import com.example.ferreteria_api.service.ClientService;
