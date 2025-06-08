@@ -33,16 +33,21 @@ public class ClientService {
         }
     }
 
-    public Optional<Client> getClientById(Long id){
+    public Client getClientById(Long id) {
         try {
-            return clientRepository.findById(id);
-        } catch (Exception e) {
-            throw new CustomException(
-                    "Internal server error: method findById from service",
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
+            Client client = clientRepository.findById(id)
+                    .orElseThrow(() -> new CustomException("Client no encontrado con id: " + id, HttpStatus.NOT_FOUND));
 
+            if (!client.isActive()) {
+                throw new CustomException("Cliente con id " + id + " está inactivo", HttpStatus.NOT_FOUND);
+            }
+
+            return client;
+        } catch (CustomException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomException("Internal server error: method findById from service", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public Client save(Client client) {
