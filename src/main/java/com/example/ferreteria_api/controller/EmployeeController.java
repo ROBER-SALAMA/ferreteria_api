@@ -1,8 +1,11 @@
 package com.example.ferreteria_api.controller;
 
 
+import com.example.ferreteria_api.entity.Client;
 import com.example.ferreteria_api.entity.Employee;
+import com.example.ferreteria_api.entity.Product;
 import com.example.ferreteria_api.global.ApiResponse;
+import com.example.ferreteria_api.global.GetResponse;
 import com.example.ferreteria_api.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +22,18 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping
-    public List<Employee> getAll() {
-        return employeeService.getEmployee();
+    public ResponseEntity<GetResponse> getAll() {
+        List<Employee> employees = employeeService.getEmployee();
+
+        if (employees.isEmpty()) {
+            GetResponse response = new GetResponse(false, "No se encontraron empleados activos");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        GetResponse response = new GetResponse(true, "Employees found successfully");
+        response.addField("employees", employees);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
