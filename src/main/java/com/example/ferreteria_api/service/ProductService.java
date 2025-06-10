@@ -109,6 +109,18 @@ public class ProductService {
         try {
             Product product = productRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con id: " + id));
+
+            System.out.println("DTO recibido: " + dto);
+            if (dto.getTypeOfMeasureId() == null) {
+                throw new CustomException("El campo 'typeOfMeasureId' es obligatorio", HttpStatus.BAD_REQUEST);
+            }
+            if (dto.getCategoriesId() == null) {
+                throw new CustomException("El campo 'categoriesId' es obligatorio", HttpStatus.BAD_REQUEST);
+            }
+            if (dto.getTypeOfProductId() == null) {
+                throw new CustomException("El campo 'typeOfProductId' es obligatorio", HttpStatus.BAD_REQUEST);
+            }
+
             product.setName(dto.getName());
             product.setCode(dto.getCode());
             product.setPrice(dto.getPrice());

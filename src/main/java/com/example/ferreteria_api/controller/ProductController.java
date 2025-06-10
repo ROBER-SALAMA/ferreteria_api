@@ -2,6 +2,7 @@ package com.example.ferreteria_api.controller;
 
 import com.example.ferreteria_api.DTO.CreateProductDTO;
 import com.example.ferreteria_api.DTO.UpdateProductDto;
+import com.example.ferreteria_api.entity.Employee;
 import com.example.ferreteria_api.entity.Product;
 import com.example.ferreteria_api.entity.Roles;
 import com.example.ferreteria_api.global.ApiResponse;
@@ -55,10 +56,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> update(
-            @PathVariable Long id,
-            @RequestBody UpdateProductDto updateProductDto
-    ) {
+    public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody UpdateProductDto updateProductDto) {
         productService.update(id, updateProductDto);
         ApiResponse response = new ApiResponse("successfully updated", null);
         return ResponseEntity.status(HttpStatus.OK).body(response);
